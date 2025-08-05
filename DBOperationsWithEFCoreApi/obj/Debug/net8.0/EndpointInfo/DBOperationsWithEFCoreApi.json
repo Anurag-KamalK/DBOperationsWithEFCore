@@ -4,6 +4,19 @@
     "title": "DBOperationsWithEFCoreApi",
     "version": "1.0"
   },
-  "paths": { },
+  "paths": {
+    "/api/Currency/CurreniesGet": {
+      "get": {
+        "tags": [
+          "Currency"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
   "components": { }
 }
