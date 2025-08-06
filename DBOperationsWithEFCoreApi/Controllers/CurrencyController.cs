@@ -1,6 +1,7 @@
 ﻿using DBOperationsWithEFCoreApi.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DBOperationsWithEFCoreApi.Controllers
 {
@@ -16,10 +17,41 @@ namespace DBOperationsWithEFCoreApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult CurreniesGet()
+        public async Task<JsonResult> CurreniesGet()
         {
-            var result= this._appDbContext.Currencies.ToList();
-            return Ok(result);
+            //var result = await _appDbContext.Currencies.ToListAsync();
+            var result = await (from currecies in _appDbContext.Currencies select currecies).ToListAsync();
+            
+            return new JsonResult(result);
         }
+
+        [HttpGet("{Id}")]
+        public async Task<JsonResult> CurreniesGetById([FromRoute] long Id)
+        {
+            var result = await _appDbContext.Currencies.FindAsync(Id);
+
+            if (result == null)
+            {
+                return new JsonResult(new
+                {
+                    condition = "False",
+                    message = "No Record Found.",
+                    data = new object[] { }
+                });
+            }
+            else
+            {
+                return new JsonResult(new
+                {
+                    condition = "True",
+                    message = "Records Found.",
+                    data = result
+                });
+            }
+            
+
+        }
+
     }
 }
+
