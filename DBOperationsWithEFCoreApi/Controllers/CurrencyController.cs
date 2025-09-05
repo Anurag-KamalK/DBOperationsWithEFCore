@@ -1,4 +1,5 @@
 ﻿using DBOperationsWithEFCoreApi.Data;
+using DBOperationsWithEFCoreApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,47 +10,23 @@ namespace DBOperationsWithEFCoreApi.Controllers
     [ApiController]
     public class CurrencyController : ControllerBase
     {
-        private readonly AppDbContext _appDbContext;
+        private readonly ICurrencyService _currencyService;
 
-        public CurrencyController(AppDbContext appDbContext)
+        public CurrencyController(ICurrencyService currencyService)
         {
-            this._appDbContext = appDbContext;
+            this._currencyService = currencyService;
         }
 
         [HttpGet]
         public async Task<JsonResult> CurreniesGet()
         {
-            //var result = await _appDbContext.Currencies.ToListAsync();
-            var result = await (from currecies in _appDbContext.Currencies select currecies).ToListAsync();
-            
-            return new JsonResult(result);
+            return await this._currencyService.CurreniesGetService();
         }
 
         [HttpGet("{Id}")]
         public async Task<JsonResult> CurreniesGetById([FromRoute] long Id)
         {
-            var result = await _appDbContext.Currencies.FindAsync(Id);
-
-            if (result == null)
-            {
-                return new JsonResult(new
-                {
-                    condition = "False",
-                    message = "No Record Found.",
-                    data = new object[] { }
-                });
-            }
-            else
-            {
-                return new JsonResult(new
-                {
-                    condition = "True",
-                    message = "Records Found.",
-                    data = result
-                });
-            }
-            
-
+            return await this._currencyService.CurreniesGetByIdService(Id);
         }
 
     }

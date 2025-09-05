@@ -1,4 +1,6 @@
 using DBOperationsWithEFCoreApi.Data;
+using DBOperationsWithEFCoreApi.Services;
+using DBOperationsWithEFCoreApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DBOperationsWithEFCoreApi
@@ -9,7 +11,9 @@ namespace DBOperationsWithEFCoreApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBaseConnection"))); 
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBaseConnection")));
+
+            builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 
             // Add services to the container.
 
@@ -18,7 +22,7 @@ namespace DBOperationsWithEFCoreApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
+            var app = builder.Build(); 
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
